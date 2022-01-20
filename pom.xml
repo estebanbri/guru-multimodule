@@ -10,8 +10,8 @@
     <version>2.31-SNAPSHOT</version>
 
     <modules>
-        <module>guru-core</module>
-        <module>guru-api</module>
+        <module>../guru-service</module>
+        <module>../guru-core</module>
     </modules>
 
     <!-- Properties que van a ser heredadas por todos los modulos hijos for free-->
