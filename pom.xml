@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>guru-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>2.31-SNAPSHOT</version>
+
+    <modules>
+        <module>guru-core</module>
+        <module>guru-api</module>
+    </modules>
+
+    <!-- Properties que van a ser heredadas por todos los modulos hijos for free-->
+    <properties>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <!-- Dependencias que van a ser heredadas por todos los modulos hijos for free-->
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+    </dependencies>
+
+
+</project>
