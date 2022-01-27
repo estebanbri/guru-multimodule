@@ -17,13 +17,15 @@
     <!-- Properties que van a ser heredadas por todos los modulos hijos for free-->
     <properties>
         <commons-lang3.version>3.12.0</commons-lang3.version>
+        <hsqldb.version>2.6.1</hsqldb.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
-    <!-- Dependencias que van a ser heredadas por todos los modulos hijos for free-->
+    <!-- Dependencias que van a ser heredadas por todos los modulos hijos for free (Resumen: asi vas a declarar las dependencias obligatorias que TODO hijo va a heredar) -->
+    <!-- Ventaja: Los hijos automaticamente van a heredar estas dependencias sin necesidad ni si quiera declararlas en su pom -->
+    <!-- Desventaja: Los hijos aunque no las usen igualmente en el empaquetado final van a contener estas depenencias sin usar, haciendo que pese mas su .jar al vicio-->
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -31,5 +33,37 @@
         </dependency>
     </dependencies>
 
+    <!-- Dependencias de las cuales los modulos hijos pueden optar si heredarla o no (Resumen: asi vas a declarar las dependencias cuyos hijos van a tener el poder de decidir si la necesitan o no -->
+    <!-- Ventaja: Empaquetado final del modulo hijo no va a contener depenencias que ni si quiera necesitó/necesita = .jar mas pequeño -->
+    <!-- Desventaja: Cada modulo hijo tiene que declarar cada una de las dependencias que necesita del padre, con la ventaja de que no necesitan especificar la version (la version esta unicamente declarada en el pom padre)-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId> <!--Si a esta dependencia sin la agrego dentro de dependencyManagement modulos hijos que no tengan db inmemory para testing la van a heredar igual al vicio-->
+                <version>${hsqldb.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- En resumen las dependencias que van a heredar los modulos hijos seran las siguientes (mvn dependency:tree) -->
+
+    <!-- guru.core  -->
+    <!--
+        [INFO] org.example:guru-core:jar:2.31-SNAPSHOT
+        [INFO] +- commons-io:commons-io:jar:2.11.0:compile              (Declarada por guru-core)
+        [INFO] \- org.apache.commons:commons-lang3:jar:3.12.0:compile   (Auto-heredada del parent sin necesidad de especificarla <dependency>)
+
+    -->
+
+    <!-- guru.service  -->
+    <!--
+        [INFO] org.example:guru-service:jar:2.31-SNAPSHOT
+        [INFO] +- org.example:guru-core:jar:2.31-SNAPSHOT:compile
+        [INFO] |  \- commons-io:commons-io:jar:2.11.0:compile           (commons-io = Este es el problema de que tu core que lo incluis en todo los modulos agregue dependencias porque van a aparecer en los demas modulos como dependecia transitiva del core)
+        [INFO] +- org.hsqldb:hsqldb:jar:2.6.1:test                      (Heredada del parent por necesidad de utilizarla via <dependency>)
+        [INFO] \- org.apache.commons:commons-lang3:jar:3.12.0:compile   (Auto-heredada del parent sin necesidad de especificarla <dependency>)
+    -->
 
 </project>
